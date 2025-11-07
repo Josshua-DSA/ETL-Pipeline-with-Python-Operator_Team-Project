@@ -4,10 +4,10 @@ apache-airflow-providers-postgres==5.11.0   # Provider Postgres untuk Airflow
 
 # PostgreSQL dan SQLAlchemy
 psycopg2-binary==2.9.9                # Driver PostgreSQL untuk Python
-sqlalchemy==2.0.0                     # SQLAlchemy untuk pengelolaan query SQL
+sqlalchemy==2.0.44                     # SQLAlchemy untuk pengelolaan query SQL
 
 # Library untuk manipulasi data
-pandas==2.1.0                         # Untuk manipulasi data (convert JSON ke DataFrame)
+pandas==2.3.3                         # Untuk manipulasi data (convert JSON ke DataFrame)
 requests==2.32.0                      # Untuk melakukan HTTP request ke API Open-Meteo
 
 # (Opsional) Untuk pengujian dan debugging

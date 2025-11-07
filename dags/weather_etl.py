@@ -4,14 +4,15 @@ from airflow import DAG
 from airflow.decorators import task
 from airflow.models import Variable
 
-# Import modul ETL
+# Import modul ETL dan ConnectUpsert
 from etl_weather.extract import extract_weather_data
 from etl_weather.transform import transform_weather
-from etl_weather.load import load_to_csv, load_to_postgres  # <-- Import load_to_postgres dan load_to_csv
+from etl_weather.load import load_to_csv, load_to_postgres
+from ConnectUpsert.connect_postgres import create_weather_table, create_weather_temp_table, merge_data
 from etl_weather.config import SETTINGS
 
 # Airflow Variables untuk koneksi
-PG_CONN_ID = Variable.get("PG_CONN_ID", default_var="postgres_default")
+PG_CONN_ID = Variable.get("PG_CONN_ID", default_var="postgres_default") # misal ubah koneksi tinggal ganti "postgres_default" 
 PG_TABLE   = Variable.get("PG_TABLE",   default_var="public.weather_hourly")
 
 default_args = {
@@ -43,14 +44,18 @@ with DAG(
     @task
     def load_pg(records: list[dict]) -> str:
         """Load data into Postgres (with UPSERT)"""
-        return load_to_postgres(records, table=PG_TABLE, pg_conn_id=PG_CONN_ID)
+        return load_to_postgres(records, table=PG_TABLE, pg_conn_id=PG_CONN_ID, dag=dag)
 
     @task
     def load_csv(records: list[dict]) -> str:
         """Save data to CSV (backup or audit)"""
         return load_to_csv(records, out_path="data/staging/staging_weather_data.csv")
 
-    # Orkestrasi antar task (Extract → Transform → Load ke Postgres dan CSV)
+    # Langkah untuk membuat tabel weather_hourly dan weather_temp
+    create_weather_table(pg_conn_id=PG_CONN_ID, dag=dag)
+    create_weather_temp_table(pg_conn_id=PG_CONN_ID, dag=dag)
+
+    # Langkah-langkah untuk mengatur data dari Open-Meteo API
     raw_path = extract()
     records = transform(raw_path)
 
@@ -59,3 +64,6 @@ with DAG(
 
     # Memuat data ke CSV (Opsional)
     load_csv(records)
+
+    # Merge data (UPSERT) ke tabel utama weather_hourly
+    merge_data(pg_conn_id=PG_CONN_ID, dag=dag)
