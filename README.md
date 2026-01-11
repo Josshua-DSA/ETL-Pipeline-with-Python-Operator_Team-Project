@@ -7,20 +7,6 @@
 
 ---
 
-## 📖 Daftar Isi
-- [Tentang Proyek](#-tentang-proyek)
-- [Fitur Utama](#-fitur-utama)
-- [Struktur Proyek](#-struktur-proyek)
-- [Persyaratan Sistem](#-persyaratan-sistem)
-- [Instalasi](#-instalasi)
-- [Konfigurasi](#-konfigurasi)
-- [Cara Penggunaan](#-cara-penggunaan)
-- [Verifikasi Data](#-verifikasi-data)
-- [Troubleshooting](#-troubleshooting)
-- [Kontribusi](#-kontribusi)
-
----
-
 ## 🎯 Tentang Proyek
 
 Proyek ini mengimplementasikan **pipeline ETL (Extract, Transform, Load)** yang terotomatisasi menggunakan **Apache Airflow** untuk mengumpulkan, memproses, dan menyimpan data cuaca dari **Open-Meteo API**. Pipeline ini dirancang untuk mengambil data cuaca secara berkala, mentransformasikannya ke dalam format terstruktur, dan menyimpannya ke dalam **database PostgreSQL** serta **file CSV** sebagai backup.
